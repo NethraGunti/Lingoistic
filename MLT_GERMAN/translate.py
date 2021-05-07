@@ -4,16 +4,28 @@ import youtokentome
 import math
 
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-bpe_model = youtokentome.BPE(model="./transformer data/bpe.model")
+# bpe_model = youtokentome.BPE(model="./transformer data/bpe.model")
 
-checkpoint = torch.load("averaged_transformer_checkpoint.pth.tar")
-model = checkpoint['model'].to(device)
-model.eval()
+# checkpoint = torch.load("averaged_transformer_checkpoint.pth.tar")
+# model = checkpoint['model'].to(device)
+# model.eval()
 
 
-def translate(source_sequence, beam_size=4, length_norm_coefficient=0.6):
+def translate(
+    source_sequence,
+    bpe_model_path='./transformer data/bpe.model',
+    checkpoint_path="averaged_transformer_checkpoint.pth.tar",
+    beam_size=4,
+    length_norm_coefficient=0.6,
+    ):
+    bpe_model = youtokentome.BPE(model=bpe_model_path)
+
+    checkpoint = torch.load(checkpoint_path)
+    model = checkpoint['model'].to(device)
+    model.eval()
+
     with torch.no_grad():
         k = beam_size
 
@@ -97,5 +109,5 @@ def translate(source_sequence, beam_size=4, length_norm_coefficient=0.6):
         return best_hypothesis, all_hypotheses
 
 
-if __name__ == '__main__':
-    translate("It was the best of times, it was the worst of times.")
+# if __name__ == '__main__':
+#     translate("It was the best of times, it was the worst of times.")
