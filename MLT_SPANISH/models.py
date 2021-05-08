@@ -7,11 +7,10 @@ from torch import nn
 
 
 class ParallelLanguageDataset(Dataset):
-    def __init__(self, data_path_1, data_path_2, tokenizer, max_len, integrate=False):
-        self.data_1, self.data_2 = self.load_data(data_path_1, data_path_2)
+    def __init__(self, data_path_1, data_path_2, tokenizer, max_len):
         self.max_len = max_len
         self.tokenizer = tokenizer
-        self.integrate = integrate
+        self.data_1, self.data_2 = self.load_data(data_path_1, data_path_2)
  
     def __len__(self):
         return len(self.data_1)
@@ -41,7 +40,7 @@ class ParallelLanguageDataset(Dataset):
             "attention_mask"
         ].type(torch.bool)
         
-        if not self.integrate:
+        if self.data_2:
             sent2 = str(self.data_2[item_idx])
             encoded_output_sent2 = self.tokenizer.encode_plus(
                 sent2,
@@ -81,7 +80,7 @@ class ParallelLanguageDataset(Dataset):
         return return_dict
  
     def load_data(self, data_path_1, data_path_2):
-        if self.integrate:
+        if not data_path_2:
             data_1 = data_path_1
             data_2 = data_path_2
         else:

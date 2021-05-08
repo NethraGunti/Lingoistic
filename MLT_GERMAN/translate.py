@@ -15,6 +15,7 @@ import math
 
 def translate(
     source_sequence,
+    device,
     bpe_model_path='./transformer data/bpe.model',
     checkpoint_path="averaged_transformer_checkpoint.pth.tar",
     beam_size=4,
